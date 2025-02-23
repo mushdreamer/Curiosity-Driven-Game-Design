@@ -29,9 +29,17 @@ public class PlayerMovement : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+
+        // 设置初始摄像机视角，保证进入游戏时视角居中
+        rotationX = 15f; // 适中的俯视角度
+        cameraHolder.position = transform.position;
+        cameraHolder.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
+
+        // 设置相机的初始位置，保持角色居中
+        playerCamera.transform.localPosition = new Vector3(0, 2.5f, -6f);
+        playerCamera.transform.LookAt(transform.position + Vector3.up * 1.5f);
     }
+
 
     void Update()
     {
