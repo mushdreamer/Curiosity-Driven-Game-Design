@@ -107,15 +107,19 @@ public class PlayerMovement : MonoBehaviour
         rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
         rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
 
-        // 水平旋转由 CameraHolder 控制，垂直旋转由相机本身控制
+        // 水平旋转由 CameraHolder 控制
         cameraHolder.Rotate(Vector3.up, mouseX);
 
-        // 设置相机在 CameraHolder 内部的相对位置，保证以角色为圆心
-        playerCamera.transform.localPosition = new Vector3(0, 1.5f, -4f);
-        playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+        // 通过调整相机的 Y 位置实现上下看 (保持以角色为中心)
+        float verticalOffset = Mathf.Sin(Mathf.Deg2Rad * rotationX) * 4f; // 4f 是相机与角色的距离
+        float zOffset = Mathf.Cos(Mathf.Deg2Rad * rotationX) * -4f; // 保持相机距离角色的固定值
 
-        // 确保相机始终看向角色中心
+        // 设置相机在 CameraHolder 内的相对位置，实现以角色为中心的上下视角
+        playerCamera.transform.localPosition = new Vector3(0, 1.5f + verticalOffset, zOffset);
+
+        // 保持相机始终看向角色中心
         playerCamera.transform.LookAt(transform.position + Vector3.up * 1.5f);
     }
+
 
 }
