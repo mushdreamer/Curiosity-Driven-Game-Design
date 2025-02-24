@@ -5,41 +5,28 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
+    //basic setting
+    public CharacterController characterController;
+    private Animator animator;
+    //camera
     public Camera playerCamera;
-    public Transform cameraHolder; // CameraHolder 用于相机视角独立控制
+    public Transform cameraHolder;
+    private Vector3 moveDirection = Vector3.zero;
+    public float lookSpeed = 2f;
+    public float lookXLimit = 45f;
+    private float rotationX = 0;
+    //player info
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
     public float jumpPower = 7f;
     public float gravity = 10f;
-    public float lookSpeed = 2f;
-    public float lookXLimit = 45f;
-    public float defaultHeight = 2f;
-    public float crouchHeight = 1f;
-    public float crouchSpeed = 3f;
-
-    private Vector3 moveDirection = Vector3.zero;
-    private float rotationX = 0;
-    public CharacterController characterController;
-
     private bool canMove = true;
-
-    private Animator animator;
 
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
-
-        // 设置初始摄像机视角，保证进入游戏时视角居中
-        rotationX = 15f; // 适中的俯视角度
-        cameraHolder.position = transform.position;
-        cameraHolder.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
-
-        // 设置相机的初始位置，保持角色居中
-        playerCamera.transform.localPosition = new Vector3(0, 2.5f, -6f);
-        playerCamera.transform.LookAt(transform.position + Vector3.up * 1.5f);
     }
-
 
     void Update()
     {
@@ -75,19 +62,6 @@ public class PlayerMovement : MonoBehaviour
         if (!characterController.isGrounded)
         {
             moveDirection.y -= gravity * Time.deltaTime;
-        }
-
-        if (Input.GetKey(KeyCode.R) && canMove)
-        {
-            characterController.height = crouchHeight;
-            walkSpeed = crouchSpeed;
-            runSpeed = crouchSpeed;
-        }
-        else
-        {
-            characterController.height = defaultHeight;
-            walkSpeed = 6f;
-            runSpeed = 12f;
         }
 
         characterController.Move(moveDirection * Time.deltaTime);
